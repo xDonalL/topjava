@@ -22,6 +22,9 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("redirecting to meal");
+        String action = request.getParameter("action");
+        String uuid = request.getParameter("uuid");
+        if (action == null) {
             Map<LocalDate, Integer> caloriesSumPerDay = new HashMap<>();
             for (Meal meal : meals) {
                 caloriesSumPerDay.merge(meal.getDateTime().toLocalDate(), meal.getCalories(), Integer::sum);
@@ -34,6 +37,15 @@ public class MealServlet extends HttpServlet {
             request.setAttribute("formater", TimeUtil.FORMATER);
             request.setAttribute("meals", mealsTo);
             request.getRequestDispatcher("meals.jsp").forward(request, response);
+        }
+        if (action != null) {
+            switch (action) {
+                case "delete":
+                    meals.remove(MealsUtil.getMeal(uuid));
+                    response.sendRedirect("meals");
+                    break;
+            }
+        }
     }
 
     @Override
