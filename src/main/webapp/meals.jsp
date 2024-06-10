@@ -18,7 +18,7 @@
 <hr>
 <h2>Meals</h2>
 <p></p>
-<a href="edit.jsp">Add meal</a>
+<a href="meals?action=add">Add meal</a>
 <p></p>
 <table border="1" cellpadding="4" cellspacing="0">
     <tr>
@@ -29,10 +29,10 @@
         <th></th>
     </tr>
     <c:forEach items="${meals}" var="meal">
-        <tr class="<c:out value='${meal.isExcess() ? "red" : "green"}' />">
-            <td>${formater.format(meal.getDateTime())}</td>
-            <td>${meal.getDescription()}</td>
-            <td>${meal.getCalories()}</td>
+        <tr class="<c:out value='${meal.excess ? "red" : "green"}' />">
+            <td>${formatter.format(meal.dateTime)}</td>
+            <td>${meal.description}</td>
+            <td>${meal.calories}</td>
             <td><a href="meals?uuid=${meal.getUUID()}&action=update">Update</a></td>
             <td><a href="meals?uuid=${meal.getUUID()}&action=delete">Delete</a> </td>
         </tr>

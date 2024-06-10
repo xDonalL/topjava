@@ -35,7 +35,7 @@ public class MealServlet extends HttpServlet {
                             new MealTo(meal.getUUID(), meal.getDateTime(), meal.getDescription(), meal.getCalories(),
                                     caloriesSumPerDay.get(meal.getDateTime().toLocalDate()) > MealsUtil.CALORIES_PER_DAY))
                     .collect(Collectors.toList());
-            request.setAttribute("formater", TimeUtil.FORMATER);
+            request.setAttribute("formatter", TimeUtil.FORMATTER);
             request.setAttribute("meals", mealsTo);
             request.getRequestDispatcher("meals.jsp").forward(request, response);
         }
@@ -49,11 +49,13 @@ public class MealServlet extends HttpServlet {
                 case "add":
                     meal = new Meal();
                     request.setAttribute("meal", meal);
+                    request.setAttribute("title", "Add Meal");
                     request.getRequestDispatcher("edit.jsp").forward(request, response);
                     break;
                 case "update":
                     meal = MealsUtil.getMeal(uuid);
                     request.setAttribute("meal", meal);
+                    request.setAttribute("title", "Edit Meal");
                     request.getRequestDispatcher("edit.jsp").forward(request, response);
             }
         }
