@@ -39,6 +39,7 @@ public class MealServlet extends HttpServlet {
             request.setAttribute("meals", mealsTo);
             request.getRequestDispatcher("meals.jsp").forward(request, response);
         }
+        Meal meal;
         if (action != null) {
             switch (action) {
                 case "delete":
@@ -46,10 +47,14 @@ public class MealServlet extends HttpServlet {
                     response.sendRedirect("meals");
                     break;
                 case "add":
-                    Meal meal = new Meal();
+                    meal = new Meal();
                     request.setAttribute("meal", meal);
                     request.getRequestDispatcher("edit.jsp").forward(request, response);
                     break;
+                case "update":
+                    meal = MealsUtil.getMeal(uuid);
+                    request.setAttribute("meal", meal);
+                    request.getRequestDispatcher("edit.jsp").forward(request, response);
             }
         }
     }
@@ -58,9 +63,15 @@ public class MealServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         String localDate = request.getParameter("localDate");
+        String uuid = request.getParameter("uuid");
         String description = request.getParameter("description");
         String calories = request.getParameter("calories");
-        meals.add(new Meal(LocalDateTime.parse(localDate), description, Integer.parseInt(calories)));
+        if (uuid.isEmpty()) {
+            meals.add(new Meal(LocalDateTime.parse(localDate), description, Integer.parseInt(calories)));
+        } else {
+            meals.remove(MealsUtil.getMeal(uuid));
+            meals.add(new Meal(LocalDateTime.parse(localDate), description, Integer.parseInt(calories)));
+        }
         response.sendRedirect("meals");
     }
 }

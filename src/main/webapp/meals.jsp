@@ -33,7 +33,7 @@
             <td>${formater.format(meal.getDateTime())}</td>
             <td>${meal.getDescription()}</td>
             <td>${meal.getCalories()}</td>
-            <td></td>
+            <td><a href="meals?uuid=${meal.getUUID()}&action=update">Update</a></td>
             <td><a href="meals?uuid=${meal.getUUID()}&action=delete">Delete</a> </td>
         </tr>
     </c:forEach>
