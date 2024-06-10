@@ -10,6 +10,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -44,12 +45,22 @@ public class MealServlet extends HttpServlet {
                     meals.remove(MealsUtil.getMeal(uuid));
                     response.sendRedirect("meals");
                     break;
+                case "add":
+                    Meal meal = new Meal();
+                    request.setAttribute("meal", meal);
+                    request.getRequestDispatcher("edit.jsp").forward(request, response);
+                    break;
             }
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        request.setCharacterEncoding("UTF-8");
+        String localDate = request.getParameter("localDate");
+        String description = request.getParameter("description");
+        String calories = request.getParameter("calories");
+        meals.add(new Meal(LocalDateTime.parse(localDate), description, Integer.parseInt(calories)));
+        response.sendRedirect("meals");
     }
 }

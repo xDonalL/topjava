@@ -18,6 +18,8 @@
 <hr>
 <h2>Meals</h2>
 <p></p>
+<a href="edit.jsp">Add meal</a>
+<p></p>
 <table border="1" cellpadding="4" cellspacing="0">
     <tr>
         <th>Date</th>
