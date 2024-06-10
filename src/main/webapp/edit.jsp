@@ -9,7 +9,7 @@
 <h3>${title}</h3>
 <form method="post" action="meals" enctype="application/x-www-form-urlencoded">
     <input type="hidden" name="id" value="${meal.id}">
-    <p>DataTime: <input type="datetime-local" name="localDate" size=55 value="${meal.dateTime}"></p>
+    <p>DataTime: <input type="datetime-local" name="localDate" size=55 value="${time}"></p>
     <p>Description: <input type="text" name="description" size=55 value="${meal.description}"></p>
     <p>Calories: <input type="text" name="calories" size=55 value="${meal.calories}"></p>
     <button type="submit">Save</button>

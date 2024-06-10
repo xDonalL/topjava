@@ -13,9 +13,11 @@ import javax.servlet.http.*;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.time.LocalDateTime.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class MealServlet extends HttpServlet {
@@ -55,12 +57,14 @@ public class MealServlet extends HttpServlet {
                     break;
                 case "add":
                     request.setAttribute("meal", meal);
+                    request.setAttribute("time", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")));
                     request.setAttribute("title", "Add Meal");
                     request.getRequestDispatcher("edit.jsp").forward(request, response);
                     break;
                 case "update":
                     meal = mealStorage.get(Integer.parseInt(id));
                     request.setAttribute("meal", meal);
+                    request.setAttribute("time", meal.getDateTime());
                     request.setAttribute("title", "Edit Meal");
                     request.getRequestDispatcher("edit.jsp").forward(request, response);
             }
@@ -75,9 +79,9 @@ public class MealServlet extends HttpServlet {
         String description = request.getParameter("description");
         String calories = request.getParameter("calories");
         if (id.isEmpty()) {
-            mealStorage.save(new Meal(LocalDateTime.parse(localDate), description, Integer.parseInt(calories)));
+            mealStorage.save(new Meal(parse(localDate), description, Integer.parseInt(calories)));
         } else {
-            Meal meal = new Meal(LocalDateTime.parse(localDate), description, Integer.parseInt(calories));
+            Meal meal = new Meal(parse(localDate), description, Integer.parseInt(calories));
             meal.setId(Integer.parseInt(id));
             mealStorage.update(meal);
         }
