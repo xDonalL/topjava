@@ -19,9 +19,9 @@
     </tr>
     <c:forEach items="${meals}" var="meal">
         <tr>
-            <td>${meal.dateTime}</td>
-            <td>${meal.description}</td>
-            <td>${meal.calories}</td>
+            <td>${formater.format(meal.getDateTime())}</td>
+            <td>${meal.getDescription()}</td>
+            <td>${meal.getCalories()}</td>
         </tr>
     </c:forEach>
 </table>

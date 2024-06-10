@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
+import ru.javawebinar.topjava.util.TimeUtil;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -26,6 +27,7 @@ public class MealServlet extends HttpServlet {
                         new MealTo(meal.getDateTime(), meal.getDescription(),
                                 meal.getCalories(), true))
                 .collect(Collectors.toList());
+        request.setAttribute("formater", TimeUtil.FORMATER);
         request.setAttribute("meals", mealsTo);
         request.getRequestDispatcher("meals.jsp").forward(request, response);
     }
