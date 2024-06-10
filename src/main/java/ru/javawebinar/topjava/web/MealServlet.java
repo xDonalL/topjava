@@ -77,11 +77,11 @@ public class MealServlet extends HttpServlet {
         String localDate = request.getParameter("localDate");
         String id = request.getParameter("id");
         String description = request.getParameter("description");
-        String calories = request.getParameter("calories");
+        int calories = Integer.parseInt(request.getParameter("calories"));
         if (id.isEmpty()) {
-            mealStorage.save(new Meal(parse(localDate), description, Integer.parseInt(calories)));
+            mealStorage.save(new Meal(parse(localDate), description, calories));
         } else {
-            Meal meal = new Meal(parse(localDate), description, Integer.parseInt(calories));
+            Meal meal = new Meal(parse(localDate), description, calories);
             meal.setId(Integer.parseInt(id));
             mealStorage.update(meal);
         }
