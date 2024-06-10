@@ -3,6 +3,8 @@ package ru.javawebinar.topjava.web;
 import org.slf4j.Logger;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealTo;
+import ru.javawebinar.topjava.storage.MapMealStorage;
+import ru.javawebinar.topjava.storage.MealStorage;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.util.TimeUtil;
 
@@ -18,7 +20,12 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(MealServlet.class);
-    private final List<Meal> meals = MealsUtil.meals;
+    private MealStorage mealStorage;
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        mealStorage = new MapMealStorage(MealsUtil.meals);
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -26,10 +33,10 @@ public class MealServlet extends HttpServlet {
         String action = request.getParameter("action");
         if (action == null) {
             Map<LocalDate, Integer> caloriesSumPerDay = new HashMap<>();
-            for (Meal meal : meals) {
+            for (Meal meal : mealStorage.getAllMeals()) {
                 caloriesSumPerDay.merge(meal.getDateTime().toLocalDate(), meal.getCalories(), Integer::sum);
             }
-            List<MealTo> mealsTo = meals.stream()
+            List<MealTo> mealsTo = mealStorage.getAllMeals().stream()
                     .map(meal ->
                             new MealTo(meal.getId(), meal.getDateTime(), meal.getDescription(), meal.getCalories(),
                                     caloriesSumPerDay.get(meal.getDateTime().toLocalDate()) > MealsUtil.CALORIES_PER_DAY))
@@ -43,7 +50,7 @@ public class MealServlet extends HttpServlet {
         if (action != null) {
             switch (action) {
                 case "delete":
-                    meals.remove(MealsUtil.getMeal(id));
+                    mealStorage.delete(Integer.parseInt(id));
                     response.sendRedirect("meals");
                     break;
                 case "add":
@@ -52,7 +59,7 @@ public class MealServlet extends HttpServlet {
                     request.getRequestDispatcher("edit.jsp").forward(request, response);
                     break;
                 case "update":
-                    meal = MealsUtil.getMeal(id);
+                    meal = mealStorage.get(Integer.parseInt(id));
                     request.setAttribute("meal", meal);
                     request.setAttribute("title", "Edit Meal");
                     request.getRequestDispatcher("edit.jsp").forward(request, response);
@@ -68,10 +75,11 @@ public class MealServlet extends HttpServlet {
         String description = request.getParameter("description");
         String calories = request.getParameter("calories");
         if (id.isEmpty()) {
-            meals.add(new Meal(LocalDateTime.parse(localDate), description, Integer.parseInt(calories)));
+            mealStorage.save(new Meal(LocalDateTime.parse(localDate), description, Integer.parseInt(calories)));
         } else {
-            meals.remove(MealsUtil.getMeal(id));
-            meals.add(new Meal(LocalDateTime.parse(localDate), description, Integer.parseInt(calories)));
+            Meal meal = new Meal(LocalDateTime.parse(localDate), description, Integer.parseInt(calories));
+            meal.setId(Integer.parseInt(id));
+            mealStorage.update(meal);
         }
         response.sendRedirect("meals");
     }
