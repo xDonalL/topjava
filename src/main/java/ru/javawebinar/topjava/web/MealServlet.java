@@ -22,18 +22,18 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("redirecting to meal");
-        Map<LocalDate, Integer> caloriesSumPerDay = new HashMap<>();
-        for (Meal meal : meals) {
-            caloriesSumPerDay.merge(meal.getDateTime().toLocalDate(), meal.getCalories(), Integer::sum);
-        }
-        List<MealTo> mealsTo = meals.stream()
-                .map(meal ->
-                        new MealTo(meal.getDateTime(), meal.getDescription(), meal.getCalories(),
-                                caloriesSumPerDay.get(meal.getDateTime().toLocalDate())>MealsUtil.CALORIES_PER_DAY))
-                .collect(Collectors.toList());
-        request.setAttribute("formater", TimeUtil.FORMATER);
-        request.setAttribute("meals", mealsTo);
-        request.getRequestDispatcher("meals.jsp").forward(request, response);
+            Map<LocalDate, Integer> caloriesSumPerDay = new HashMap<>();
+            for (Meal meal : meals) {
+                caloriesSumPerDay.merge(meal.getDateTime().toLocalDate(), meal.getCalories(), Integer::sum);
+            }
+            List<MealTo> mealsTo = meals.stream()
+                    .map(meal ->
+                            new MealTo(meal.getUUID(), meal.getDateTime(), meal.getDescription(), meal.getCalories(),
+                                    caloriesSumPerDay.get(meal.getDateTime().toLocalDate()) > MealsUtil.CALORIES_PER_DAY))
+                    .collect(Collectors.toList());
+            request.setAttribute("formater", TimeUtil.FORMATER);
+            request.setAttribute("meals", mealsTo);
+            request.getRequestDispatcher("meals.jsp").forward(request, response);
     }
 
     @Override
