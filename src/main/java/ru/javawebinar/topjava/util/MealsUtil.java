@@ -43,12 +43,12 @@ public class MealsUtil {
     }
 
     private static MealTo createTo(Meal meal, boolean excess) {
-        return new MealTo(meal.getUUID(), meal.getDateTime(), meal.getDescription(), meal.getCalories(), excess);
+        return new MealTo(meal.getDateTime(), meal.getDescription(), meal.getCalories(), excess);
     }
 
     public static Meal getMeal(String uuid) {
         for (Meal meal : meals) {
-            if (meal.getUUID().equals(uuid)) {
+            if (meal.getId().equals(uuid)) {
                 return meal;
             }
         }

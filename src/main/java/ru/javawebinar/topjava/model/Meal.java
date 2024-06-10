@@ -7,7 +7,7 @@ import java.time.LocalTime;
 import static java.util.UUID.randomUUID;
 
 public class Meal {
-    private final String UUID;
+    private Integer id;
 
     private LocalDateTime dateTime;
 
@@ -16,14 +16,9 @@ public class Meal {
     private int calories;
 
     public Meal(LocalDateTime dateTime, String description, int calories) {
-        UUID = randomUUID().toString();
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
-    }
-
-    public Meal() {
-        this.UUID = randomUUID().toString();
     }
 
     public LocalDateTime getDateTime() {
@@ -46,7 +41,7 @@ public class Meal {
         return dateTime.toLocalTime();
     }
 
-    public String getUUID() {
-        return UUID;
+    public Integer getId() {
+        return id;
     }
 }

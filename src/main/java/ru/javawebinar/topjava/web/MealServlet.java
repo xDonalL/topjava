@@ -24,7 +24,6 @@ public class MealServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("redirecting to meal");
         String action = request.getParameter("action");
-        String uuid = request.getParameter("uuid");
         if (action == null) {
             Map<LocalDate, Integer> caloriesSumPerDay = new HashMap<>();
             for (Meal meal : meals) {
@@ -32,28 +31,28 @@ public class MealServlet extends HttpServlet {
             }
             List<MealTo> mealsTo = meals.stream()
                     .map(meal ->
-                            new MealTo(meal.getUUID(), meal.getDateTime(), meal.getDescription(), meal.getCalories(),
+                            new MealTo(meal.getId(), meal.getDateTime(), meal.getDescription(), meal.getCalories(),
                                     caloriesSumPerDay.get(meal.getDateTime().toLocalDate()) > MealsUtil.CALORIES_PER_DAY))
                     .collect(Collectors.toList());
             request.setAttribute("formatter", TimeUtil.FORMATTER);
             request.setAttribute("meals", mealsTo);
             request.getRequestDispatcher("meals.jsp").forward(request, response);
         }
-        Meal meal;
+        Meal meal = null;
+        String id = request.getParameter("id");
         if (action != null) {
             switch (action) {
                 case "delete":
-                    meals.remove(MealsUtil.getMeal(uuid));
+                    meals.remove(MealsUtil.getMeal(id));
                     response.sendRedirect("meals");
                     break;
                 case "add":
-                    meal = new Meal();
                     request.setAttribute("meal", meal);
                     request.setAttribute("title", "Add Meal");
                     request.getRequestDispatcher("edit.jsp").forward(request, response);
                     break;
                 case "update":
-                    meal = MealsUtil.getMeal(uuid);
+                    meal = MealsUtil.getMeal(id);
                     request.setAttribute("meal", meal);
                     request.setAttribute("title", "Edit Meal");
                     request.getRequestDispatcher("edit.jsp").forward(request, response);
@@ -65,13 +64,13 @@ public class MealServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         String localDate = request.getParameter("localDate");
-        String uuid = request.getParameter("uuid");
+        String id = request.getParameter("id");
         String description = request.getParameter("description");
         String calories = request.getParameter("calories");
-        if (uuid.isEmpty()) {
+        if (id.isEmpty()) {
             meals.add(new Meal(LocalDateTime.parse(localDate), description, Integer.parseInt(calories)));
         } else {
-            meals.remove(MealsUtil.getMeal(uuid));
+            meals.remove(MealsUtil.getMeal(id));
             meals.add(new Meal(LocalDateTime.parse(localDate), description, Integer.parseInt(calories)));
         }
         response.sendRedirect("meals");
