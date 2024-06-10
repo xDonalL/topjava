@@ -39,4 +39,8 @@ public class MealTo {
     public int getCalories() {
         return calories;
     }
+
+    public boolean isExcess() {
+        return excess;
+    }
 }

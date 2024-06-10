@@ -9,8 +9,8 @@ import ru.javawebinar.topjava.util.TimeUtil;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -22,10 +22,14 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("redirecting to meal");
+        Map<LocalDate, Integer> caloriesSumPerDay = new HashMap<>();
+        for (Meal meal : meals) {
+            caloriesSumPerDay.merge(meal.getDateTime().toLocalDate(), meal.getCalories(), Integer::sum);
+        }
         List<MealTo> mealsTo = meals.stream()
                 .map(meal ->
-                        new MealTo(meal.getDateTime(), meal.getDescription(),
-                                meal.getCalories(), true))
+                        new MealTo(meal.getDateTime(), meal.getDescription(), meal.getCalories(),
+                                caloriesSumPerDay.get(meal.getDateTime().toLocalDate())>MealsUtil.CALORIES_PER_DAY))
                 .collect(Collectors.toList());
         request.setAttribute("formater", TimeUtil.FORMATER);
         request.setAttribute("meals", mealsTo);

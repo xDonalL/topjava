@@ -3,6 +3,15 @@
 <html>
 <head>
     <title>Meals</title>
+    <style>
+        .red {
+            color: red;
+        }
+
+        .green {
+            color: green;
+        }
+    </style>
 </head>
 <body>
 <h3><a href="index.html">Home</a></h3>
@@ -18,7 +27,7 @@
         <th></th>
     </tr>
     <c:forEach items="${meals}" var="meal">
-        <tr>
+        <tr class="<c:out value='${meal.isExcess() ? "red" : "green"}' />">
             <td>${formater.format(meal.getDateTime())}</td>
             <td>${meal.getDescription()}</td>
             <td>${meal.getCalories()}</td>
