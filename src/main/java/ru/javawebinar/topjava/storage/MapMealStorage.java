@@ -2,13 +2,10 @@ package ru.javawebinar.topjava.storage;
 
 import ru.javawebinar.topjava.model.Meal;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MapMealStorage implements MealStorage {
-    private final Map<Integer, Meal> meals = new HashMap<>();
+    private final Map<Integer, Meal> meals = Collections.synchronizedMap(new HashMap<>());
     private static Integer id = 0;
 
     public MapMealStorage(List<Meal> meals) {
