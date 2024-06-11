@@ -47,6 +47,7 @@ public class MealServlet extends HttpServlet {
                 case "delete":
                     mealStorage.delete(Integer.parseInt(id));
                     response.sendRedirect("meals");
+                    log.debug("meal removed");
                     break;
                 case "add":
                     request.setAttribute("meal", meal);
@@ -76,10 +77,12 @@ public class MealServlet extends HttpServlet {
         int calories = Integer.parseInt(request.getParameter("calories"));
         if (id.isEmpty()) {
             mealStorage.save(new Meal(parse(localDate), description, calories));
+            log.debug("saved to meal");
         } else {
             Meal meal = new Meal(parse(localDate), description, calories);
             meal.setId(Integer.parseInt(id));
             mealStorage.update(meal);
+            log.debug("update to meal");
         }
         response.sendRedirect("meals");
     }
