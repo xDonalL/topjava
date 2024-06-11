@@ -35,7 +35,7 @@ public class MealServlet extends HttpServlet {
         log.debug("redirecting to meal");
         String action = request.getParameter("action");
         if (action == null) {
-            List<MealTo> mealsTo = MealsUtil.filteredByStreams(mealStorage.getAllMeals(), null, null, 2000);
+            List<MealTo> mealsTo = MealsUtil.filteredByStreams(mealStorage.getAllMeals());
             request.setAttribute("formatter", TimeUtil.FORMATTER);
             request.setAttribute("meals", mealsTo);
             request.getRequestDispatcher("meals.jsp").forward(request, response);

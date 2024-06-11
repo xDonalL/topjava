@@ -30,21 +30,17 @@ public class MealsUtil {
                 .collect(
                         Collectors.groupingBy(Meal::getDate, Collectors.summingInt(Meal::getCalories))
                 );
-        if (startTime == null && endTime == null) {
-            return meals.stream()
-                    .map(meal ->
-                            new MealTo(meal.getId(), meal.getDateTime(), meal.getDescription(), meal.getCalories(),
-                                    caloriesSumByDate.get(meal.getDateTime().toLocalDate()) > caloriesPerDay))
-                    .collect(Collectors.toList());
-        } else {
             return meals.stream()
                     .filter(meal -> TimeUtil.isBetweenHalfOpen(meal.getTime(), startTime, endTime))
-                    .map(meal -> createTo(meal, caloriesSumByDate.get(meal.getDate()) > caloriesPerDay))
+                    .map(meal -> createTo(meal, meal.getId(), caloriesSumByDate.get(meal.getDate()) > caloriesPerDay))
                     .collect(Collectors.toList());
-        }
     }
 
-    private static MealTo createTo(Meal meal, boolean excess) {
-        return new MealTo(meal.getDateTime(), meal.getDescription(), meal.getCalories(), excess);
+    public static List<MealTo> filteredByStreams(List<Meal> meals) {
+        return filteredByStreams(meals, null, null, CALORIES_PER_DAY);
+    }
+
+    private static MealTo createTo(Meal meal, int id, boolean excess) {
+        return new MealTo(id, meal.getDateTime(), meal.getDescription(), meal.getCalories(), excess);
     }
 }
