@@ -29,7 +29,7 @@
         <th></th>
     </tr>
     <c:forEach items="${meals}" var="meal">
-        <tr class="<c:out value='${meal.excess ? "red" : "green"}' />">
+        <tr class="${meal.excess ? 'red' : 'green'}">
             <td>${formatter.format(meal.dateTime)}</td>
             <td>${meal.description}</td>
             <td>${meal.calories}</td>

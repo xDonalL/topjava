@@ -59,14 +59,17 @@ public class MealServlet extends HttpServlet {
                     request.setAttribute("meal", meal);
                     request.setAttribute("time", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")));
                     request.setAttribute("title", "Add Meal");
-                    request.getRequestDispatcher("edit.jsp").forward(request, response);
+                    request.getRequestDispatcher("mealEdit.jsp").forward(request, response);
                     break;
                 case "update":
                     meal = mealStorage.get(Integer.parseInt(id));
                     request.setAttribute("meal", meal);
                     request.setAttribute("time", meal.getDateTime());
                     request.setAttribute("title", "Edit Meal");
-                    request.getRequestDispatcher("edit.jsp").forward(request, response);
+                    request.getRequestDispatcher("mealEdit.jsp").forward(request, response);
+                    break;
+                default:
+                    response.sendRedirect("meals");
             }
         }
     }
