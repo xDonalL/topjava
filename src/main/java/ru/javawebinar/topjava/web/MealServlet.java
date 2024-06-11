@@ -35,27 +35,32 @@ public class MealServlet extends HttpServlet {
         log.debug("redirecting to meal");
         String action = request.getParameter("action");
         if (action == null) {
+            log.debug("redirecting to meals");
             List<MealTo> mealsTo = MealsUtil.filteredByStreams(mealStorage.getAllMeals());
             request.setAttribute("formatter", TimeUtil.FORMATTER);
             request.setAttribute("meals", mealsTo);
             request.getRequestDispatcher("meals.jsp").forward(request, response);
+            log.debug("redirect to meals");
         }
         Meal meal = null;
         String id = request.getParameter("id");
         if (action != null) {
             switch (action) {
                 case "delete":
+                    log.debug("redirecting to delete meal");
                     mealStorage.delete(Integer.parseInt(id));
                     response.sendRedirect("meals");
                     log.debug("meal removed");
                     break;
                 case "add":
+                    log.debug("redirecting to add meal");
                     request.setAttribute("meal", meal);
                     request.setAttribute("time", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")));
                     request.setAttribute("title", "Add Meal");
                     request.getRequestDispatcher("mealEdit.jsp").forward(request, response);
                     break;
                 case "update":
+                    log.debug("redirecting to update meal");
                     meal = mealStorage.get(Integer.parseInt(id));
                     request.setAttribute("meal", meal);
                     request.setAttribute("time", meal.getDateTime());
@@ -63,6 +68,7 @@ public class MealServlet extends HttpServlet {
                     request.getRequestDispatcher("mealEdit.jsp").forward(request, response);
                     break;
                 default:
+                    log.debug("redirecting to meals");
                     response.sendRedirect("meals");
             }
         }
@@ -70,6 +76,7 @@ public class MealServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        log.debug("redirecting doPost");
         request.setCharacterEncoding("UTF-8");
         String localDate = request.getParameter("localDate");
         String id = request.getParameter("id");
