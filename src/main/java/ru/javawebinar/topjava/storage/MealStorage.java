@@ -5,13 +5,13 @@ import ru.javawebinar.topjava.model.Meal;
 import java.util.List;
 
 public interface MealStorage {
-    public void save(Meal meal);
+    public Meal create(Meal meal);
 
-    public void update(Meal meal);
+    public Meal update(Meal meal);
 
-    public void delete(Integer id);
+    public void delete(int id);
 
-    public Meal get(Integer id);
+    public Meal get(int id);
 
     public List<Meal> getAllMeals();
 }

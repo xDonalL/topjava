@@ -3,44 +3,39 @@ package ru.javawebinar.topjava.storage;
 import ru.javawebinar.topjava.model.Meal;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MapMealStorage implements MealStorage {
-    private final Map<Integer, Meal> meals = Collections.synchronizedMap(new HashMap<>());
-    private static Integer id = 0;
+    private final Map<Integer, Meal> meals = new ConcurrentHashMap<>();
+    private final AtomicInteger nextId = new AtomicInteger();
 
     public MapMealStorage(List<Meal> meals) {
-        for (Meal meal : meals) {
-            save(meal);
-        }
-    }
-
-    public MapMealStorage() {
+        meals.forEach(this::create);
     }
 
     @Override
-    public void delete(Integer id) {
+    public void delete(int id) {
         meals.remove(id);
     }
 
     @Override
-    public Meal get(Integer id) {
+    public Meal get(int id) {
         return meals.get(id);
     }
 
     @Override
-    public void update(Meal meal) {
-        Meal existingMeal = get(meal.getId());
-        if (existingMeal != null) {
-            existingMeal.setDateTime(meal.getDateTime());
-            existingMeal.setDescription(meal.getDescription());
-            existingMeal.setCalories(meal.getCalories());
-        }
+    public Meal update(Meal meal) {
+        meals.put(meal.getId(), meal);
+        return meal;
     }
 
     @Override
-    public void save(Meal meal) {
+    public Meal create(Meal meal) {
+        int id = nextId.incrementAndGet();
         meal.setId(id);
-        meals.put(id++, meal);
+        meals.put(id, meal);
+        return meal;
     }
 
     @Override
