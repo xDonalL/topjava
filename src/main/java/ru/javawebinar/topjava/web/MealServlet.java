@@ -23,6 +23,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(MealServlet.class);
     private MealStorage mealStorage;
+
     @Override
     public void init() throws ServletException {
         super.init();
@@ -34,15 +35,7 @@ public class MealServlet extends HttpServlet {
         log.debug("redirecting to meal");
         String action = request.getParameter("action");
         if (action == null) {
-            Map<LocalDate, Integer> caloriesSumPerDay = new HashMap<>();
-            for (Meal meal : mealStorage.getAllMeals()) {
-                caloriesSumPerDay.merge(meal.getDateTime().toLocalDate(), meal.getCalories(), Integer::sum);
-            }
-            List<MealTo> mealsTo = mealStorage.getAllMeals().stream()
-                    .map(meal ->
-                            new MealTo(meal.getId(), meal.getDateTime(), meal.getDescription(), meal.getCalories(),
-                                    caloriesSumPerDay.get(meal.getDateTime().toLocalDate()) > MealsUtil.CALORIES_PER_DAY))
-                    .collect(Collectors.toList());
+            List<MealTo> mealsTo = MealsUtil.filteredByStreams(mealStorage.getAllMeals(), null, null, 2000);
             request.setAttribute("formatter", TimeUtil.FORMATTER);
             request.setAttribute("meals", mealsTo);
             request.getRequestDispatcher("meals.jsp").forward(request, response);

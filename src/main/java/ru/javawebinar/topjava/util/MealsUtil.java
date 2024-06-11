@@ -29,13 +29,19 @@ public class MealsUtil {
         Map<LocalDate, Integer> caloriesSumByDate = meals.stream()
                 .collect(
                         Collectors.groupingBy(Meal::getDate, Collectors.summingInt(Meal::getCalories))
-//                      Collectors.toMap(Meal::getDate, Meal::getCalories, Integer::sum)
                 );
-
-        return meals.stream()
-                .filter(meal -> TimeUtil.isBetweenHalfOpen(meal.getTime(), startTime, endTime))
-                .map(meal -> createTo(meal, caloriesSumByDate.get(meal.getDate()) > caloriesPerDay))
-                .collect(Collectors.toList());
+        if (startTime == null && endTime == null) {
+            return meals.stream()
+                    .map(meal ->
+                            new MealTo(meal.getId(), meal.getDateTime(), meal.getDescription(), meal.getCalories(),
+                                    caloriesSumByDate.get(meal.getDateTime().toLocalDate()) > caloriesPerDay))
+                    .collect(Collectors.toList());
+        } else {
+            return meals.stream()
+                    .filter(meal -> TimeUtil.isBetweenHalfOpen(meal.getTime(), startTime, endTime))
+                    .map(meal -> createTo(meal, caloriesSumByDate.get(meal.getDate()) > caloriesPerDay))
+                    .collect(Collectors.toList());
+        }
     }
 
     private static MealTo createTo(Meal meal, boolean excess) {
