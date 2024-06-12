@@ -3,24 +3,14 @@
 <html>
 <head>
     <title>
-        <c:if test="${meal.description == null}">
-            Add Meal
-        </c:if>
-        <c:if test="${meal.description != null}">
-            Edit Meal
-        </c:if>
+        <c:out value="${meal.id == null ? 'Add Meal' : 'Edit Meal'}"/>
     </title>
 </head>
 <body>
 <h3><a href="index.html">Home</a></h3>
 <hr>
 <h3>
-    <c:if test="${meal.description == null}">
-        Add Meal
-    </c:if>
-    <c:if test="${meal.description != null}">
-        Edit Meal
-    </c:if>
+    <c:out value="${meal.id == null ? 'Add Meal' : 'Edit Meal'}"/>
 </h3>
 <form method="post" action="meals" enctype="application/x-www-form-urlencoded">
     <input type="hidden" name="id" value="${meal.id}">
@@ -29,8 +19,6 @@
     <p>Calories: <input type="number" id="calories" name="calories" size=55 value="${meal.calories}"></p>
     <button type="submit">Save</button>
     <button type="button" onclick="goBack()">Back</button>
-    <script>
-    </script>
     <script>
         function goBack() {
             window.history.back();

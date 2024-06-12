@@ -1,8 +1,11 @@
 package ru.javawebinar.topjava.storage;
 
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.util.MealsUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -10,7 +13,8 @@ public class MapMealStorage implements MealStorage {
     private final Map<Integer, Meal> meals = new ConcurrentHashMap<>();
     private final AtomicInteger nextId = new AtomicInteger();
 
-    public MapMealStorage(List<Meal> meals) {
+    public MapMealStorage() {
+        List<Meal> meals = MealsUtil.meals;
         meals.forEach(this::create);
     }
 
@@ -39,7 +43,7 @@ public class MapMealStorage implements MealStorage {
     }
 
     @Override
-    public List<Meal> getAllMeals() {
+    public List<Meal> getAll() {
         return new ArrayList<>(meals.values());
     }
 }

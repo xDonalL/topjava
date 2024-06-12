@@ -8,15 +8,18 @@ import ru.javawebinar.topjava.storage.MealStorage;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.util.TimeUtil;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 
-import static java.time.LocalDateTime.*;
+import static java.time.LocalDateTime.parse;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class MealServlet extends HttpServlet {
@@ -25,7 +28,7 @@ public class MealServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        mealStorage = new MapMealStorage(MealsUtil.meals);
+        mealStorage = new MapMealStorage();
     }
 
     @Override
@@ -33,15 +36,14 @@ public class MealServlet extends HttpServlet {
         String action = request.getParameter("action");
         if (action == null) {
             log.debug("redirecting to meals");
-            List<MealTo> mealsTo = MealsUtil.filteredByStreams(mealStorage.getAllMeals());
+            List<MealTo> mealsTo = MealsUtil.filteredByStreams(mealStorage.getAll());
             request.setAttribute("formatter", TimeUtil.FORMATTER);
             request.setAttribute("meals", mealsTo);
             request.getRequestDispatcher("meals.jsp").forward(request, response);
             log.debug("redirect to meals");
-        }
-        Meal meal;
-        String id = request.getParameter("id");
-        if (action != null) {
+        } else {
+            Meal meal;
+            String id = request.getParameter("id");
             switch (action) {
                 case "delete":
                     log.debug("redirecting to delete meal");
@@ -51,10 +53,8 @@ public class MealServlet extends HttpServlet {
                     break;
                 case "add":
                     log.debug("redirecting to add meal");
-                    meal = new Meal();
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-                    String formattedDateTime = LocalDateTime.now().format(formatter);
-                    meal.setDateTime(LocalDateTime.parse(formattedDateTime, formatter));
+                    LocalDateTime localDate = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+                    meal = new Meal(localDate);
                     request.setAttribute("meal", meal);
                     request.getRequestDispatcher("mealEdit.jsp").forward(request, response);
                     break;
@@ -75,11 +75,11 @@ public class MealServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("redirecting doPost");
         request.setCharacterEncoding("UTF-8");
-        String localDate = request.getParameter("localDate");
+        LocalDateTime localDate = parse(request.getParameter("localDate"));
         String id = request.getParameter("id");
         String description = request.getParameter("description");
         int calories = Integer.parseInt(request.getParameter("calories"));
-        Meal meal = new Meal(parse(localDate), description, calories);
+        Meal meal = new Meal(localDate, description, calories);
         if (id.isEmpty()) {
             mealStorage.create(meal);
             log.debug("saved to meal");
