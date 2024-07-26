@@ -36,7 +36,7 @@ public class MealRestController {
         List<MealTo> list = getAll();
         Meal meal = service.get(id, SecurityUtil.authUserId());
         return list.stream().
-                filter(mealTo -> meal.equals(mealTo))
+                filter(mealTo -> meal.getId().equals(mealTo.getId()))
                 .findFirst()
                 .orElse(null);
     }
