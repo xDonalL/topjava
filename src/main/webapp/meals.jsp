@@ -21,16 +21,14 @@
     <hr/>
     <h2>Meals</h2>
     <form action="meals" method="get">
-        <label for="fromDate">From Date</label>
-        <input type="date" id="fromDate" name="fromDate" required>
-        <label for="toDate">To Date</label>
-        <input type="date" id="toDate" name="toDate" required>
-        <p/>
-        <label for="fromTime">From Time</label>
-        <input type="time" id="fromTime" name="fromTime" required>
-        <label for="toTime">To Time</label>
-        <input type="time" id="toTime" name="toTime" required>
-        <p/>
+        <p>From Date</p>
+        <input type="date" id="fromDate" name="fromDate">
+        <p>To Date</p>
+        <input type="date" id="toDate" name="toDate">
+        <p>From Time</p>
+        <input type="time" id="fromTime" name="fromTime">
+        <p>To Time</p>
+        <input type="time" id="toTime" name="toTime">
         <input type="hidden" name="action" value="sort">
         <button type="submit">Filter</button>
     </form>

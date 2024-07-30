@@ -14,9 +14,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
+
+import static ru.javawebinar.topjava.util.DateTimeUtil.parseDate;
+import static ru.javawebinar.topjava.util.DateTimeUtil.parseTime;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
@@ -79,9 +84,11 @@ public class MealServlet extends HttpServlet {
                 break;
             case "sort":
                 log.info("sort");
-                LocalDateTime start = DateTimeUtil.parseDateTime(request.getParameter("fromDate"), request.getParameter("fromTime"));
-                LocalDateTime end = DateTimeUtil.parseDateTime(request.getParameter("toDate"), request.getParameter("toTime"));
-                request.setAttribute("meals", mealController.getSortDateTime(start, end));
+                LocalDate startDate = parseDate(request.getParameter("fromDate"));
+                LocalTime startTime = parseTime(request.getParameter("fromTime"));
+                LocalDate endDate = parseDate(request.getParameter("toDate"));
+                LocalTime endTime = parseTime(request.getParameter("toTime"));
+                request.setAttribute("meals", mealController.getBetweenDateTime(startDate, startTime, endDate , endTime));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
             case "all":
