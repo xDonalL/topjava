@@ -12,28 +12,24 @@ public class DateTimeUtil {
         return lt.compareTo(startTime) >= 0 && lt.compareTo(endTime) <= 0;
     }
 
-    public static boolean isBetweenHalfOpen(LocalDateTime lt, LocalDateTime startTime, LocalDateTime endTime) {
-        return lt.compareTo(startTime) >= 0 && lt.compareTo(endTime) <= 0;
-    }
-
     public static boolean isBetweenHalfOpen(LocalDate lt, LocalDate startDate, LocalDate endDate) {
         return lt.compareTo(startDate) >= 0 && lt.compareTo(endDate) < 0;
     }
 
     public static LocalDate checkStartDate(LocalDate localDate) {
-        return localDate == null ? MIN_DATE : localDate;
+        return localDate == null ? LocalDate.MIN : localDate;
     }
 
     public static LocalDate checkEndDate(LocalDate localDate) {
-        return localDate == null ? MAX_DATE : localDate;
+        return localDate == null ? LocalDate.MAX : localDate;
     }
 
     public static LocalTime checkStartTime(LocalTime localTime) {
-        return localTime == null ? MIN_TIME : localTime;
+        return localTime == null ? LocalTime.MIN : localTime;
     }
 
     public static LocalTime checkEndTime(LocalTime localTime) {
-        return localTime == null ? MAX_TIME : localTime;
+        return localTime == null ? LocalTime.MAX : localTime;
     }
 
     public static LocalDate parseDate(String date) {
