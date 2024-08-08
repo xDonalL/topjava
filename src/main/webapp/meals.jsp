@@ -21,14 +21,13 @@
     <hr/>
     <h2>Meals</h2>
     <form action="meals" method="get">
-        <p>From Date</p>
-        <input type="date" id="fromDate" name="fromDate">
+        <input type="date" id="fromDate" name="fromDate" value="${param.fromDate}">
         <p>To Date</p>
-        <input type="date" id="toDate" name="toDate">
+        <input type="date" id="toDate" name="toDate" value="${param.toDate}">
         <p>From Time</p>
-        <input type="time" id="fromTime" name="fromTime">
+        <input type="time" id="fromTime" name="fromTime" value="${param.fromTime}">
         <p>To Time</p>
-        <input type="time" id="toTime" name="toTime">
+        <input type="time" id="toTime" name="toTime" value="${param.toTime}">
         <input type="hidden" name="action" value="sort">
         <button type="submit">Filter</button>
     </form>
