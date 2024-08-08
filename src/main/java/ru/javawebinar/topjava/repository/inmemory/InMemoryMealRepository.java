@@ -7,14 +7,15 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
 
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
+
+import static ru.javawebinar.topjava.util.MealsUtil.getFilteredDate;
 
 @Repository
 public class InMemoryMealRepository implements MealRepository {
@@ -41,7 +42,6 @@ public class InMemoryMealRepository implements MealRepository {
                 return existingMeal;
             });
         }
-
     }
 
     @Override
@@ -75,6 +75,12 @@ public class InMemoryMealRepository implements MealRepository {
                 .filter(meal -> meal.getUserId() == userId)
                 .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Meal> filerByDate(int userId, LocalDate start, LocalDate end) {
+        log.info("filerByDateTime");
+        return getFilteredDate(getAll(userId), start, end);
     }
 }
 

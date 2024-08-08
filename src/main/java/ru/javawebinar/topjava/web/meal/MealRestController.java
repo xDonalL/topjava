@@ -1,20 +1,23 @@
 package ru.javawebinar.topjava.web.meal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
-import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
-import static ru.javawebinar.topjava.util.MealsUtil.*;
+import static ru.javawebinar.topjava.util.DateTimeUtil.*;
+import static ru.javawebinar.topjava.util.MealsUtil.getFilteredTimeTos;
+import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
+import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 
 @Controller
 public class MealRestController {
@@ -56,7 +59,9 @@ public class MealRestController {
     }
 
     public List<MealTo> getBetweenDateTime(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
-        List<Meal> meals = getFilteredDateTimeTos(service.getAll(SecurityUtil.authUserId()), DateTimeUtil.checkStartDate(startDate), DateTimeUtil.checkEndDate(endDate));
-        return getFilteredTimeTos(meals, DEFAULT_CALORIES_PER_DAY, DateTimeUtil.checkStartTime(startTime), DateTimeUtil.checkEndTime(endTime));
+        int userId = SecurityUtil.authUserId();
+        log.info("get filter user {}", userId);
+        return getFilteredTimeTos(service.getFilterDate(userId, checkStartDate(startDate), checkEndDate(endDate)),
+                SecurityUtil.authUserCaloriesPerDay(), checkStartTime(startTime), checkEndTime(endTime));
     }
 }
