@@ -29,18 +29,17 @@ public class InMemoryMealRepository implements MealRepository {
     @Override
     public Meal save(Meal meal, int userId) {
         log.info("save {}", meal);
-
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
-            repository.put(meal.getId(), meal);
+            repository.put(meal.getId(), new Meal(meal, userId));
             return meal;
         } else {
-            Meal existingMeal = repository.get(meal.getId());
-            if (existingMeal == null || existingMeal.getUserId() != userId) {
-                return null;
-            }
-            repository.put(meal.getId(), meal);
-            return meal;
+            return repository.compute(meal.getId(), (id, existingMeal) -> {
+                if (existingMeal.getUserId() == userId) {
+                    return new Meal(meal, userId);
+                }
+                return existingMeal;
+            });
         }
 
     }
@@ -48,19 +47,23 @@ public class InMemoryMealRepository implements MealRepository {
     @Override
     public boolean delete(int id, int userId) {
         log.info("delete {}", id);
-
-        Meal meal = repository.get(id);
-        if (meal != null && meal.getUserId() == userId) {
-            repository.remove(id);
+        if (repository.get(id) != null) {
+            repository.computeIfPresent(id, (k, v) -> {
+                if (v.getUserId() == userId) {
+                    return null;
+                } else {
+                    return v;
+                }
+            });
             return true;
+        } else {
+            return false;
         }
-        return false;
-
     }
 
     @Override
     public Meal get(int id, int userId) {
-        log.info("get {}", repository.get(id));
+        log.info("get {}", id);
         Meal meal = repository.get(id);
         return (meal != null && meal.getUserId() == userId) ? meal : null;
     }

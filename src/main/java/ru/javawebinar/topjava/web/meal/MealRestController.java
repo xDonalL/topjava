@@ -19,40 +19,40 @@ import static ru.javawebinar.topjava.util.MealsUtil.*;
 @Controller
 public class MealRestController {
 
+    private static final Logger log = LoggerFactory.getLogger(MealRestController.class);
     @Autowired
     private MealService service;
 
-    public void create(Meal meal) {
-        service.create(meal);
+    public Meal create(Meal meal) {
+        int userId = SecurityUtil.authUserId();
+        checkNew(meal);
+        log.debug("create meal {} user {}", meal, userId);
+        return service.create(meal, userId);
     }
 
-    public void update(Meal meal) {
-        service.update(meal);
+    public void update(Meal meal, int id) {
+        int userId = SecurityUtil.authUserId();
+        assureIdConsistent(meal, id);
+        log.debug("update meal {} user {}", meal, userId);
+        service.update(meal, userId);
     }
 
     public void delete(int id) {
-        service.delete(id, SecurityUtil.authUserId());
+        int userId = SecurityUtil.authUserId();
+        log.info("delete meal {} user {}", id, userId);
+        service.delete(id, userId);
     }
 
-    public MealTo get(int id) {
-        List<MealTo> list = getAll();
-        Meal meal = service.get(id, SecurityUtil.authUserId());
-        return list.stream().
-                filter(mealTo -> meal.getId().equals(mealTo.getId()))
-                .findFirst()
-                .orElse(null);
+    public Meal get(int id) {
+        int userId = SecurityUtil.authUserId();
+        log.info("get meal {} user {}", id, userId);
+        return service.get(id, userId);
     }
 
     public List<MealTo> getAll() {
-        return MealsUtil.getTos(service.getAll(SecurityUtil.authUserId()), DEFAULT_CALORIES_PER_DAY);
-    }
-
-    public List<MealTo> getSortDateTime(LocalDateTime start, LocalDateTime end) {
-        return MealsUtil.getFilteredDateTimeTos(service.getAll(SecurityUtil.authUserId()), DEFAULT_CALORIES_PER_DAY, start, end);
-    }
-
-    public List<MealTo> getSortTime(LocalTime start, LocalTime end) {
-        return MealsUtil.getFilteredTimeTos(service.getAll(SecurityUtil.authUserId()), DEFAULT_CALORIES_PER_DAY, start, end);
+        int userId = SecurityUtil.authUserId();
+        log.info("get all {}", userId);
+        return MealsUtil.getTos(service.getAll(userId), SecurityUtil.authUserCaloriesPerDay());
     }
 
     public List<MealTo> getBetweenDateTime(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
