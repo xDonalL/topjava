@@ -8,30 +8,11 @@
 <hr>
 <h2>Users</h2>
 <form method="post" action="users">
-    <table border="1" cellpadding="8" cellspacing="0">
-        <tr>
-            <th>Name</th>
-            <th></th>
-        </tr>
-        <tr>
-            <td>User</td>
-            <td>
-                <form method="post" action="users">
-                    <input type="hidden" name="userId" value="1">
-                    <button type="submit">login</button>
-                </form>
-            </td>
-        </tr>
-        <tr>
-            <td>Admin</td>
-            <td>
-                <form method="post" action="users">
-                    <input type="hidden" name="userId" value="2">
-                    <button type="submit">login</button>
-                </form>
-            </td>
-        </tr>
-    </table>
+    <select id="userId" name="userId">
+       <option value="1">User</option>
+       <option value="2">Admin</option>
+   </select>
+    <button type="submit">Login</button>
 </form>
 </body>
 </html>
