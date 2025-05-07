@@ -3,6 +3,7 @@ package ru.javawebinar.topjava.repository.inmemory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
+import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
@@ -15,9 +16,16 @@ import java.util.stream.Collectors;
 public class InMemoryUserRepository implements UserRepository {
     private static final Logger log = LoggerFactory.getLogger(InMemoryUserRepository.class);
 
+    public static final Integer USER_ID = 1;
+    public static final Integer ADMIN_ID = 2;
+
     private final Map<Integer, User> users = new ConcurrentHashMap<>();
     private final AtomicInteger id = new AtomicInteger(0);
 
+    {
+        save(new User(USER_ID, "User", "user@gmail.com", "user", Role.USER));
+        save(new User(ADMIN_ID, "Admin", "admin@gmail.com", "admin", Role.ADMIN));
+    }
 
     @Override
     public boolean delete(int id) {
