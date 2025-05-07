@@ -43,7 +43,7 @@ public class MealServlet extends HttpServlet {
                 Integer.parseInt(request.getParameter("calories")), USER_ID);
 
         log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
-        mealRepository.save(meal);
+        mealRepository.save(meal, USER_ID);
         response.sendRedirect("meals");
     }
 
@@ -55,14 +55,14 @@ public class MealServlet extends HttpServlet {
             case "delete":
                 int id = getId(request);
                 log.info("Delete id={}", id);
-                mealRepository.delete(id);
+                mealRepository.delete(id, USER_ID);
                 response.sendRedirect("meals");
                 break;
             case "create":
             case "update":
                 final Meal meal = "create".equals(action) ?
                         new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000, USER_ID) :
-                        mealRepository.get(getId(request));
+                        mealRepository.get(getId(request), USER_ID);
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;
@@ -70,7 +70,7 @@ public class MealServlet extends HttpServlet {
             default:
                 log.info("getAll");
                 request.setAttribute("meals",
-                        MealsUtil.getTos(mealRepository.getAll(), MealsUtil.DEFAULT_CALORIES_PER_DAY));
+                        MealsUtil.getTos(mealRepository.getAll(USER_ID), MealsUtil.DEFAULT_CALORIES_PER_DAY));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }
