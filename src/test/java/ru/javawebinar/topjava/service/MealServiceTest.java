@@ -1,8 +1,14 @@
 package ru.javawebinar.topjava.service;
 
+import org.junit.AfterClass;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.Stopwatch;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
@@ -14,6 +20,7 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
@@ -26,11 +33,31 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 })
 @RunWith(SpringRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
-//@Ignore
 public class MealServiceTest {
+
+    private static final Logger log = LoggerFactory.getLogger("result");
 
     @Autowired
     private MealService service;
+
+    private static StringBuilder summaryString = new StringBuilder("Test summary:\n");
+
+    @Rule
+    public Stopwatch stopWatch = new Stopwatch() {
+
+        @Override
+        protected void finished(long nanos, Description description) {
+            summaryString.append(String.format("%-30s %5d ms\n",
+                    description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos)));
+            log.info("\nFinished test: {} ms\n\n", TimeUnit.NANOSECONDS.toMillis(nanos));
+        }
+    };
+
+
+    @AfterClass
+    public static void printSummary() {
+        log.info(summaryString.toString());
+    }
 
     @Test
     public void delete() {
