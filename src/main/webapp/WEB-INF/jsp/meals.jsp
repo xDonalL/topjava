@@ -43,10 +43,42 @@
             </div>
         </div>
         <br/>
-        <button class="btn btn-primary" onclick="add()">
+        <button class="btn btn-primary" onclick="openModal()">
             <span class="fa fa-plus"></span>
             <spring:message code="common.add"/>
         </button>
+        <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Добавление еды</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Закрыть">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="mealForm">
+                            <div class="form-group">
+                                <label for="dateTime">Дата и время</label>
+                                <input type="datetime-local" class="form-control" id="dateTime" name="dateTime" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Описание</label>
+                                <input type="text" class="form-control" id="description" name="description" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="calories">Калории</label>
+                                <input type="number" class="form-control" id="calories" name="calories" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                        <button type="button" class="btn btn-primary" onclick="saveMeal()">Сохранить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <table class="table table-striped" id="datatable">
             <thead>
             <tr>
