@@ -1,3 +1,16 @@
+const mealAjaxUrl = "rest/profile/meals/";
+
+const ctx = {
+    ajaxUrl: mealAjaxUrl,
+    updateTable: function () {
+        $.ajax({
+            type: "GET",
+            url: mealAjaxUrl + "filter",
+            data: $("#filter").serialize()
+        }).done(updateTableByData);
+    }
+};
+
 $(function () {
     makeEditable(
         $("#datatable").DataTable({
