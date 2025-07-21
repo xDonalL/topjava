@@ -28,7 +28,11 @@ $(function () {
             "info": true,
             "columns": [
                 {
-                    "data": "dateTime"
+                    "data": "dateTime",
+                    "render": function (data, type, row) {
+                        const dt = new Date(data);
+                        return dt.toLocaleString();
+                    }
                 },
                 {
                     "data": "description"
