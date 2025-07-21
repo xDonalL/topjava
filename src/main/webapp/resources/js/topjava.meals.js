@@ -58,7 +58,14 @@ $(function () {
                     0,
                     "desc"
                 ]
-            ]
+            ],
+            "createdRow": function (row, data) {
+                if (data.excess) {
+                    $(row).addClass("table-danger");
+                } else {
+                    $(row).addClass("table-success");
+                }
+            }
         })
     );
 });
