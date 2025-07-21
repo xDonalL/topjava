@@ -20,6 +20,10 @@ function clearFilter() {
 $(function () {
     makeEditable(
         $("#datatable").DataTable({
+            "ajax": {
+                "url": mealAjaxUrl,
+                "dataSrc": ""
+            },
             "paging": false,
             "info": true,
             "columns": [
@@ -33,11 +37,15 @@ $(function () {
                     "data": "calories"
                 },
                 {
-                    "defaultContent": "Edit",
+                    "render": function (data, type, row) {
+                        return `<a onclick="updateRow(${row.id})"><span class="fa fa-pencil"></span></a>`;
+                    },
                     "orderable": false
                 },
                 {
-                    "defaultContent": "Delete",
+                    "render": function (data, type, row) {
+                        return `<a onclick="deleteRow(${row.id})"><span class="fa fa-remove"></span></a>`;
+                    },
                     "orderable": false
                 }
             ],
