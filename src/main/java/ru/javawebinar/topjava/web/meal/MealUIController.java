@@ -13,7 +13,8 @@ import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static ru.javawebinar.topjava.util.ValidationUtil.getErrorMsg;
 
 @RestController
 @RequestMapping(value = "/profile/meals", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -41,11 +42,7 @@ public class MealUIController extends AbstractMealController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<String> updateOrCreate(@Valid Meal meal, BindingResult result) {
         if (result.hasErrors()) {
-            String errorFieldsMsg = result.getFieldErrors().stream()
-                    .map(fe -> String.format("[%s] %s", fe.getField(), fe.getDefaultMessage()))
-                    .collect(Collectors.joining("<br>"));
-            System.out.println(errorFieldsMsg);
-            return ResponseEntity.unprocessableEntity().body(errorFieldsMsg);
+            return getErrorMsg(result);
         }
         if (meal.isNew()) {
             super.create(meal);
