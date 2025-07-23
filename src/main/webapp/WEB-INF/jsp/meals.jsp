@@ -5,7 +5,17 @@
 <html>
 <jsp:include page="fragments/headTag.jsp"/>
 <body>
+<spring:message code="editTitle" var="editTitleMsg"/>
+<spring:message code="addTitle" var="addTitleMsg"/>
+<spring:message code="common.confirm" var="confirmMsg"/>
 
+<script>
+    const i18n = {
+        "editTitle": "${editTitleMsg}",
+        "addTitle": "${addTitleMsg}",
+        "common.confirm": "${confirmMsg}"
+    };
+</script>
 <script src="resources/js/jquery.min.js" defer></script>
 <script src="resources/js/datatables.min.js" defer></script>
 <script src="resources/js/topjava.common.js" defer></script>
